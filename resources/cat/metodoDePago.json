@@ -1,0 +1,5 @@
+[
+	{"clave":"PUE", "valor":"Pago en una sola exhibición"},
+	{"clave":"PIP", "valor":"Pago en una sola exhibición Pago inicial y en parcialidades"},
+	{"clave":"PPD", "valor":"Pago en parcialidades o diferido"}
+]

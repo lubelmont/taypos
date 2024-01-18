@@ -1,0 +1,90 @@
+[
+  {
+    "clave": "01",
+    "valor": "Efectivo"
+  },
+  {
+    "clave": "02",
+    "valor": "Cheque nominativo"
+  },
+  {
+    "clave": "03",
+    "valor": "Transferencia electrónica de fondos"
+  },
+  {
+    "clave": "04",
+    "valor": "Tarjeta de crédito"
+  },
+  {
+    "clave": "05",
+    "valor": "Monedero electrónico"
+  },
+  {
+    "clave": "06",
+    "valor": "Dinero electrónico"
+  },
+  {
+    "clave": "08",
+    "valor": "Vales de despensa"
+  },
+  {
+    "clave": "12",
+    "valor": "Dación de pago"
+  },
+  {
+    "clave": "13",
+    "valor": "Pago por subrogación"
+  },
+  {
+    "clave": "14",
+    "valor": "Pago por consignación"
+  },
+  {
+    "clave": "15",
+    "valor": "Condonación"
+  },
+  {
+    "clave": "17",
+    "valor": "Compensación"
+  },
+  {
+    "clave": "23",
+    "valor": "Novación"
+  },
+  {
+    "clave": "24",
+    "valor": "Confusión"
+  },
+  {
+    "clave": "25",
+    "valor": "Remisión de deuda"
+  },
+  {
+    "clave": "26",
+    "valor": "Prescripción o caducidad"
+  },
+  {
+    "clave": "27",
+    "valor": "A satisfacción del acreedor"
+  },
+  {
+    "clave": "28",
+    "valor": "Tarjeta de débito"
+  },
+  {
+    "clave": "29",
+    "valor": "Tarjeta de servicios"
+  },
+  {
+    "clave": "30",
+    "valor": "Aplicación de anticipos"
+  },
+  {
+    "clave": "31",
+    "valor": "Intermediario pagos"
+  },
+  {
+    "clave": "99",
+    "valor": "Por definir"
+  }
+]
