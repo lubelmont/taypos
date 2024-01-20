@@ -26,8 +26,8 @@ class CallTokenSesion
 
     public function getTokenFromMercadoLibre($codeTG)
     {
-        dd($codeTG);
-        $redirect_uri= 'https://b003-2806-105e-11-91b-90af-a46e-1f03-c2e3.ngrok-free.app/mercadolibre/auth';
+        
+        $redirect_uri= env('APP_URL').'/mercadolibre/auth';
 
         $curl = curl_init();
         

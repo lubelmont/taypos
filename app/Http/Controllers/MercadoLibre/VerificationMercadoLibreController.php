@@ -71,7 +71,8 @@ class VerificationMercadoLibreController extends Controller
                 "country_id"=>$userDetails["country_id"],
                 "email"=>$userDetails["email"]]);
 
-        return response($userDetails, 200);
+        //return response($userDetails, 200);
+        return redirect('mercadolibre/config');
 
         //return response()->json(['hub.challenge' => $value]);
     }

@@ -79,7 +79,7 @@ class MLConfigController extends Component
 
         $metodosDePago = json_decode(File::get($this->jsonPathMetodoDePago), true);
         $formasDePago = json_decode(File::get($this->jsonPathFormaDePago), true);
-        return view('livewire.MercadoLibre.configuracion',
+        return view('livewire.mercadolibre.configuracion',
 			[
 				'metodosDePago'=>$metodosDePago,
 				'formasDePago'=>$formasDePago,
@@ -118,8 +118,11 @@ class MLConfigController extends Component
 	private function getURLtoAuth()
 	{
 		$client_id = env('MERCADO_LIBRE_CLIENT_ID');
-		$redirect_uri= 'https://b003-2806-105e-11-91b-90af-a46e-1f03-c2e3.ngrok-free.app/mercadolibre/auth';
-    	return 'https://auth.mercadolibre.com.mx/authorization?response_type=code&client_id='.$client_id.'&redirect_uri='.$redirect_uri.'&code_challenge=pWi3fny_hb4tt3TAT8WekPS33xOZwHKsFCGat4Wtqa8&code_challenge_method=S256';
+		//$redirect_uri= 'https://b003-2806-105e-11-91b-90af-a46e-1f03-c2e3.ngrok-free.app/mercadolibre/auth';
+    	$redirect_uri = env('APP_URL').'/mercadolibre/auth';;
+
+		
+		return 'https://auth.mercadolibre.com.mx/authorization?response_type=code&client_id='.$client_id.'&redirect_uri='.$redirect_uri.'&code_challenge=pWi3fny_hb4tt3TAT8WekPS33xOZwHKsFCGat4Wtqa8&code_challenge_method=S256';
 
 	}
 

@@ -7,7 +7,7 @@
 
             <div class="widget-content">
                 <div class="row">
-                    <div class="col-sm-12 col-md-3">
+                    {{-- <div class="col-sm-12 col-md-3">
                         <div class="form-group">
                             <label>Usuario</label>
                             <select wire:model="userid" class="form-control">
@@ -18,7 +18,7 @@
                             </select>
                             @error('userid') <span class="text-danger">{{$message}}</span>@enderror
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="col-sm-12 col-md-3">
                         <div class="form-group">

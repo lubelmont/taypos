@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-3">
                         <div class="row">
-                            <div class="col-sm-12">
+                            {{-- <div class="col-sm-12">
                                 <h6>Elige el usuario</h6>
                                 <div class="form-group">
                                     <select wire:model="userId" class="form-control">
@@ -20,7 +20,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-sm-12">
                                 <h6>Elige el tipo de reporte</h6>
                                 <div class="form-group">

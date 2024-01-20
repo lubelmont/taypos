@@ -41,6 +41,8 @@ Check that .env is already configured
 ` </FilesMatch> `
 
 
+Create a simbolick link
+` $ php81 artisan storage:link ` 
 
 ## About Laravel
 

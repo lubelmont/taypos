@@ -2,6 +2,16 @@
 <div class="sidebar-wrapper sidebar-theme">
     <nav id="compactSidebar">
         <ul class="menu-categories">
+            <li class="">
+                <a href="{{url('/home')}}" data-active="true" class="menu-toggle">
+                    <div class="base-menu">
+                        <div class="base-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        </div>
+                        <span>HOME</span>
+                    </div>
+                </a>
+            </li>
             {{-- <li class="">
                 <a href="{{ url('pos') }}" class="menu-toggle" data-active="false">
                     <div class="base-menu">
@@ -11,20 +21,29 @@
                        <span>VENTAS</span>
                    </div>
                </a>
-            </li>  --}}
-            <li class="menu active">
-                <a href="#mercadoLibre" data-active="true" class="menu-toggle">
+            </li>  
+            <li class="">
+                <a href="{{ url('pos') }}" class="menu-toggle" data-active="false">
                     <div class="base-menu">
                         <div class="base-icons">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                       </div>
+                       <span>VENTAS</span>
+                   </div>
+               </a>
+            </li>--}}
+            <li class="">
+                <a href="{{url('mercadolibre/config')}}" data-active="true" class="menu-toggle">
+                    <div class="base-menu">
+                        <div class="base-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                         </div>
                         <span>MERCADO LIBRE</span>
                     </div>
                 </a>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </li>
-            {{-- @role('Admin') --}}
-            <li class="active">
+@role('Admin')
+            <li class="">
                 <a href="{{url('categories')}}" class="menu-toggle" data-active="true">
                     <div class="base-menu">
                         <div class="base-icons">
@@ -34,8 +53,7 @@
                     </div>
                 </a>
             </li>
-            {{-- @endcan --}}
-
+            
             <li class="">
                 <a href="{{ url('clients') }}" class="menu-toggle" data-active="false">
                     <div class="base-menu">
@@ -46,30 +64,30 @@
                     </div>
                 </a>
             </li>
-           
-           
-
-           
-                    
-           <li class="">
+            
+            
+            
+            
+            
+            <li class="">
                 <a href="{{ url('roles') }}" class="menu-toggle" data-active="false">
-                        <div class="base-menu">
-                            <div class="base-icons">
+                    <div class="base-menu">
+                        <div class="base-icons">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-key"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
                         </div>
                         <span>ROLES</span>
                     </div>
                 </a>
             </li>
-       
-      
+            
+            
             <li class="">
                 <a href="{{ url('permisos') }}" class="menu-toggle" data-active="false">
                     <div class="base-menu">
                         <div class="base-icons">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-                    </div>
-                      <span>PERMISOS</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                        </div>
+                        <span>PERMISOS</span>
                     </div>
                 </a>
             </li>
@@ -77,31 +95,42 @@
                 <a href="{{ url('asignar') }}" class="menu-toggle" data-active="false">
                     <div class="base-menu">
                         <div class="base-icons">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </div>
+                        <span>ASIGNAR</span>
                     </div>
-                    <span>ASIGNAR</span>
-                </div>
-            </a>
+                </a>
             </li>
             <li class="">
                 <a href="{{ url('users') }}" class="menu-toggle" data-active="false">
                     <div class="base-menu">
                         <div class="base-icons">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        </div>
+                        <span>USUARIOS</span>
                     </div>
-                    <span>USUARIOS</span>
-                </div>
-            </a>
+                </a>
             </li>
             <li class="">
                 <a href="{{ url('coins') }}" class="menu-toggle" data-active="false">
                     <div class="base-menu">
                         <div class="base-icons">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-stop-circle"><circle cx="12" cy="12" r="10"></circle><rect x="9" y="9" width="6" height="6"></rect></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-stop-circle"><circle cx="12" cy="12" r="10"></circle><rect x="9" y="9" width="6" height="6"></rect></svg>
+                        </div>
+                        <span>MONEDAS</span>
                     </div>
-                    <span>MONEDAS</span>
-                </div>
-            </a>
+                </a>
+            </li>
+@endcan
+            <li class="">
+                <a href="{{ url('asignar') }}" class="menu-toggle" data-active="false">
+                    <div class="base-menu">
+                        <div class="base-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </div>
+                        <span>Facuracion</span>
+                    </div>
+                </a>
             </li>
             <li class="">
                 <a href="{{url('cashout')}}" class="menu-toggle" data-active="false">
@@ -128,8 +157,8 @@
     <div id="compact_submenuSidebar" class="submenu-sidebar">
         <div class="submenu" id="mercadoLibre">
             <ul class="submenu-list" data-parent-element="#mercadoLibre"> 
-                <li>
-                    <a href="index.html"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg> Configuración </a>
+                <li class="{{ request()->is('mercadolibre/config') ? 'active' : '' }}">
+                    <a href="{{url('mercadolibre/config')}}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg> Configuración </a>
                 </li>
                 <li class="active">
                     <a href="index2.html"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Productos </a>

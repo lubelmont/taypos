@@ -17,6 +17,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SimCo\OrderFromPortalCotroller;
 use App\Http\Livewire\CategoriesController;
 use App\Http\Livewire\MercadoLibre\MLConfigController;
+use App\Http\Livewire\MercadoLibre\MLProductsController;
 use App\Http\Controllers\MercadoLibre\VerificationMercadoLibreController;
 
 use Illuminate\Support\Facades\Log;
@@ -37,7 +38,7 @@ use App\Http\Livewire\Clients\ClientsController;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    return Auth::check() ? redirect('/home') : view('auth.login');
 });
 
 Route::get('/phpinfo', function(){
@@ -69,9 +70,9 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-        Route::get('roles', RolesController::class);
-        Route::get('permisos', PermisosController::class);
-        Route::get('asignar', AsignarController::class);
+    Route::get('roles', RolesController::class);
+    Route::get('permisos', PermisosController::class);
+    Route::get('asignar', AsignarController::class);
     Route::get('users', UsersController::class);
     Route::get('cashout', CashoutController::class);
     Route::get('reports', ReportsController::class);
@@ -86,6 +87,7 @@ Route::middleware(['auth'])->group(function () {
 
     //reportes Mercado Libre
     Route::get('mercadolibre/config', MLConfigController::class);
+    Route::get('mercadolibre/products', MLProductsController::class);
     Route::get('mercadolibre/auth', [VerificationMercadoLibreController::class, 'getValue']);
 
 });
