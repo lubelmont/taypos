@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('transaction_amount', 8, 2);
             $table->decimal('total_paid_amount', 8, 2);
             $table->timestamp('date_approved')->nullable();
-            $table->timestamp('date_created');
+            $table->timestamp('date_created')->useCurrent();
             $table->timestamp('date_last_modified')->nullable();
             $table->decimal('marketplace_fee', 8, 2)->nullable();
             $table->string('authorization_code')->nullable();

@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('resource');
             $table->bigInteger('user_id');
             $table->bigInteger('application_id');
-            $table->timestamp('sent');
+            $table->timestamp('sent')->nullable();;
             $table->integer('attempts');
-            $table->timestamp('received');
+            $table->timestamp('received')->nullable();;
             $table->timestamps();
         });
     }

@@ -12,6 +12,7 @@
 /_ide_helper.php
 /_ide_helper_models.php
 /.phpunit.result.cache
+.htaccess
 
 # Development environment files
 /.idea
