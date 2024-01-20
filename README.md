@@ -32,6 +32,15 @@ Do a migration
 Check that .env is already configured
 
 
+.htaccess
+
+` <FilesMatch \.php$> `
+
+`    AddHandler application/x-httpd-alt-php81___lsphp .php .php5 .phtml `
+
+` </FilesMatch> `
+
+
 
 ## About Laravel
 
