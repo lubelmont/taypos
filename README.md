@@ -7,6 +7,32 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Run on CPanel
+
+Check where is composer installed ` which composer `
+
+Install al libs
+` php81 /opt/cpanel/composer/bin/composer install `
+
+Add a KEY
+` php81 artisan key:generate `
+
+
+Run the next commands
+` php81 artisan route:cache ` 
+` php81 artisan view:cache ` 
+` php81 artisan config:cache `
+
+` chmod -R 775 storage ` 
+` chmod -R 775 bootstrap/cache ` 
+
+Do a migration
+` php81 artisan migrate --force ` 
+
+Check that .env is already configured
+
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

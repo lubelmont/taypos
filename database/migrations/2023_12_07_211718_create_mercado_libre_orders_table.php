@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('buyer_first_name');
             $table->string('buyer_last_name');
             $table->timestamp('date_created');
-            $table->timestamp('last_updated');
-            $table->timestamp('expiration_date');
+            $table->timestamp('last_updated')->nullable();;
+            $table->timestamp('expiration_date')->nullable();;
             $table->timestamp('date_closed')->nullable();
             $table->text('comment')->nullable();
             $table->boolean('fulfilled');
