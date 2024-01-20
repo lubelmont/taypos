@@ -212,11 +212,11 @@ class OrderFromPortalCotroller extends Controller
         $client = new Client(['base_uri' => env('ESIM_GO_URL')]);
         $uri = 
         $headers = [
-          'X-API-Key' => 'RB0BNuFHlcBRipdDMIZwfe5sAeM95uFpYrhonuMD',
+          'X-API-Key' => '',
           'Accept' => 'application/zip'
         ];
         $headers = [
-            'X-API-Key' => 'RB0BNuFHlcBRipdDMIZwfe5sAeM95uFpYrhonuMD',
+            'X-API-Key' => '',
             'Accept' => 'application/zip'
         ];
         $request = new GuzzleRequest('GET', 'https://api.esim-go.com/v2.2/esims/assignments/00de4daf-168e-40d2-9c59-bef33b788db1', $headers);

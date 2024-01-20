@@ -52,11 +52,11 @@ class ESIMService
             $uri = 'esims/assignments/'.$reference;
 
             $headers = [
-                'X-API-Key' => env('ESIM_GO_LUBEL'),
+                'X-API-Key' => env('ESIM_GO_SIMCO'),
                 'Accept' => 'application/json',
             ];
 
-            $client = new Client(['base_uri' => env('ESIM_GO_URL')]);
+            $client = new Client(['base_uri' => env('ESIM_GO_SIMCO')]);
 
 
             $request = new Request('GET', $uri, $headers);

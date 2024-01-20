@@ -51,7 +51,7 @@ class ProcessOrders {
     private function getSimFromESim($orderFrom,$orderId, $itemSku, $quantity) {
 
         //Change "type" from "validate" = test  to "transaction" = production
-        $type = "validate";
+        $type = env('APP_ENV') === 'prod' ?  'transaction': 'validate';
 
         $orderData = [
             "type" => $type,
