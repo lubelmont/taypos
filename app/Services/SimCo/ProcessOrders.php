@@ -5,7 +5,7 @@ namespace App\Services\SimCo;
 use App\Models\MercadoLibreOrderItem;
 use App\Models\ESimGoOrder;
 use App\Models\ESimGoOrderAssignments;
-use App\Services\SimCo\ESIMService;
+use App\Services\ESimGo\ESimGoApiService;
 use Illuminate\Support\Facades\Log;
 use PhpParser\Node\Expr\FuncCall;
 
@@ -44,7 +44,8 @@ class ProcessOrders {
     }
 
     public function updateSimCoPortalOrder($orderId,$data){
-
+        $simCoPortalApi = new SimCoPortalApiService();
+        return $simCoPortalApi->updateOrderStatus($orderId,$data);
     }
 
 
@@ -59,18 +60,18 @@ class ProcessOrders {
             "Order" => [
                 [
                     "type" => "bundle",
-                    "quantity" => $quantity,
+                    "quantity" => intval($quantity),
                     "item" => $itemSku,
                 ]
             ]
         ];
         
-        $esimService = new ESIMService();
-        $response = $esimService->createOrder($orderData);
+        $esimService = new ESimGoApiService('SIMCO');
+        $response = $esimService->createOrderService($orderData);
 
-        Log::info("response");
-        Log::info($response);
-        Log::info("--response---");
+        Log::debug("response ". class_basename(__CLASS__));
+        Log::debug($response);
+        Log::debug("--response---");
 
         
         if($type == "validate"){
@@ -84,43 +85,48 @@ class ProcessOrders {
             
         }
 
-        Log::info("response 2");
-        Log::info($response);
-        Log::info("--response 2---");
-        
+        Log::debug("response ". class_basename(__CLASS__));
+        Log::debug($type);
+        Log::debug($response);
+        Log::debug("--response---");
+
         $newOrder = $this->saveOrder($orderFrom,$orderId,$itemSku,$quantity,$response);
 
 
-
-
-
+        //TODO: Put this method in ESimGoApiService
         if (strpos($response['statusMessage'], 'Order completed') === false) {
             //throw new Exception('Invalid status message: Order already completed');
             return false;
         }
 
-
-
+        
+        
         #LONG APROACH----------------------
         #The bundle is now in your inventory and needs to be applied to a new eSIM using the following
         #API - https://docs.esim-go.com/api/#post-/esims/apply
         # https://help.esim-go.com/hc/en-gb/articles/11192513354257
         #----------------------------------
-
+        
         #Go for quick aproach
         #item = sku
         
         $assingQR = $esimService->assignmentsQR($newOrder['orderReference']);
-
-
-        Log::info("assingQR");
+        
+        
+        Log::info("assingQR ". class_basename(__CLASS__));
         Log::info($assingQR);
         Log::info("--assingQR---");
-
-
+        
+        
         foreach ($assingQR as $item) {
+
             $item['orderReference'] = $newOrder['orderReference'];
-            ESimGoOrderAssignments::create($item);
+            $assignmented = ESimGoOrderAssignments::create($item);
+
+            if($assignmented){
+                $esimService->updateSimDetails($item['iccid'],$orderFrom);
+            }
+        
         }
         
 
@@ -164,14 +170,14 @@ class ProcessOrders {
         $order->subTotal = $orderFromResponse['subTotal'];
         $order->pricePerUnit = $orderFromResponse['pricePerUnit'];
         $order->total = $response['total'];
-        $order->valid = $response['valid'];
+        $order->valid = $response['valid'] ?? 1;
         $order->currency = $response['currency'];
         $order->createdDate = $response['createdDate'];
         $order->assigned = $response['assigned'];
         $order->status = $response['status'];
         $order->statusMessage = $response['statusMessage'];
         $order->orderReference = $response['orderReference'];
-        $order->order_from = $orderFrom."-".$orderId;
+        $order->order_from = $orderFrom;
 
 
     

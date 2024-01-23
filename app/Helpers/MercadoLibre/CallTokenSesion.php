@@ -172,11 +172,9 @@ class CallTokenSesion
     private static function isTokenValid($createdAt, $expiresInSeconds)
     {
 
-        $createdAtDate = Carbon::parse($createdAt);
-        
+        $createdAtDate = Carbon::parse($createdAt)->setTimezone('UTC');
         $expiresIn = $createdAtDate->addSeconds($expiresInSeconds);
-
-        $now = Carbon::now();
+        $now = Carbon::now('UTC');
 
         // true si aún está vigente, false si ha expirado
         return $now->lt($expiresIn); 

@@ -11,47 +11,67 @@ class ProcessOrders {
 
     public function processOrder($notification) {
 
-        // Log::info("<----------------notification---------------->");
-        // Log::debug($notification);
-        // Log::info("<----------------notification---------------->");
-        
+        Log::debug("<----------------notification---------------->");
+        Log::debug(json_encode($notification, JSON_PRETTY_PRINT));
+        Log::debug("<----------------notification---------------->");
         
         MercadoLibreNotification::updateOrCreate(["_id"=>$notification["_id"]],$notification);
         
-        $orderService = new CallOrders();
-        $order = $orderService->getOrderDetails($notification);
+        // ejecutar el servicio de orders para obtener los detalles de la orden
+
+        $id_mercadolibre = $notification["user_id"];
+        $resource = $notification["resource"];
+        
+        $orderService = new MercadoLibreApiServices($id_mercadolibre);
+        
+        $order = $orderService->getOrderDetailsCall($resource);
 
                 
-        // Log::info("<----------------order---------------->");
-        // Log::debug($order);
-        // Log::info("<----------------order---------------->");
+         Log::debug("<----------------order---------------->");
+         Log::debug(json_encode($order, JSON_PRETTY_PRINT));
+         Log::debug("<----------------order[status]---------------->");
+         Log::debug($order["status"]);
+         Log::debug("<----------------order---------------->");
 
         if($order["status"] !== "paid"){
             return false;
         }
         
         $exists = MercadoLibreOrder::where('id', $order["id"])->first();
+
         
-        if($exists){
-            //TODO: if order exists, check if all ready processed
-            return $exists;
+
+        $newOrder = $exists;
+
+        if (!$exists){
+
+            $order = array_filter($order, function ($value) {
+                return !is_null($value);
+            });
+    
+            $order["seller_id"] = $notification["user_id"];
+            $order["fulfilled"] = $order["fulfilled"] ?? 0;
+            
+            //Fill the buyer data
+            $order["buyer_id"] = $order["buyer"]["id"];
+            $order["buyer_nickname"] = $order["buyer"]["nickname"];
+            $order["buyer_first_name"] = $order["buyer"]["first_name"];
+            $order["buyer_last_name"] = $order["buyer"]["last_name"];
+    
+            
+            $newOrder = MercadoLibreOrder::create($order);
+        } 
+
+        Log::debug("<----------------exists[fulfilled]---------------->");
+        Log::debug($newOrder["fulfilled"]);
+        Log::debug("<----------------exists[fulfilled]---------------->");
+        
+        if($newOrder["fulfilled"]!==0){
+            Log::debug("<----------------CHALE---------------->");
+            return $newOrder;
         }
+      
         
-        $order = array_filter($order, function ($value) {
-            return !is_null($value);
-        });
-
-        $order["seller_id"] = $notification["user_id"];
-        $order["fulfilled"] = $order["fulfilled"] ?? false;
-        
-        //Fill the buyer data
-        $order["buyer_id"] = $order["buyer"]["id"];
-        $order["buyer_nickname"] = $order["buyer"]["nickname"];
-        $order["buyer_first_name"] = $order["buyer"]["first_name"];
-        $order["buyer_last_name"] = $order["buyer"]["last_name"];
-
-        
-        $newOrder = MercadoLibreOrder::create($order);
 
         $orderItems=$order["order_items"];
         
@@ -65,7 +85,7 @@ class ProcessOrders {
             $itemToSave["quantity"] = $value["quantity"];
             $itemToSave["unit_price"] = $value["unit_price"];
             $itemToSave["full_unit_price"] = $value["full_unit_price"];
-            $itemToSave["sale_fee"] = $value["sale_fee"];
+            $itemToSave["sale_fee"] = $value["sale_fee"] ?? 0;
             $itemToSave["currency_id"] = $value["currency_id"];
 
             $itemToSave = array_filter($itemToSave, function ($value) {
@@ -81,20 +101,11 @@ class ProcessOrders {
                 MercadoLibreOrderItem::create($itemToSave);
             }
         }
-
-        // Log::info("<----------------newOrder---------------->");
-        // Log::debug($newOrder);
-        // Log::info("<----------------newOrder---------------->");
-
+        
        return $newOrder;
 
     }
 
-    private function saveOrder() {
-
-
-
-    }
 }
 
 ?>

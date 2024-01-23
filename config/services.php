@@ -31,4 +31,20 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'mercadolibre' => [
+        'base_uri' => env('MERCADO_LIBRE_URL'),
+        'client_id' => env('MERCADO_LIBRE_CLIENT_ID'),
+        'client_secret' => env('MERCADO_LIBRE_CLIENT_SECRET'),
+    ],
+
+    'esimgo' => [
+        'base_uri' => env('ESIM_GO_URL'),
+    ],
+
+    'simco' => [
+        'base_uri' => env('SIMCO_URL'),
+        'consumer_key' => env('SIMCO_CONSUMER_KEY'),
+        'consumer_secret' => env('SIMCO_CONSUMER_SECRET'),
+    ],
+
 ];

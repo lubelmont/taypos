@@ -2,10 +2,12 @@
 
 namespace App\Helpers\MercadoLibre;
 
+use App\Services\MercadoLibre\MercadoLibreApiServices;
 use Illuminate\Support\Facades\Log;
 
 class CallOrders
 {
+
 
     public function getOrderDetails($order)
     {
@@ -25,12 +27,16 @@ class CallOrders
         $resource = $order["resource"];
 
         $MLTokenSesion = new CallTokenSesion();
-
         $token = $MLTokenSesion->getToken($id_mercadolibre);
 
-        $orderDetails = $this->getOrderDetailsCall($resource,$token);
+        Log::info("<------------------token------------------>");
+        Log::info($token);
+        Log::info("<------------------token------------------>");
 
-        //Log::info($orderDetails);
+        $orderDetails = $this->getOrderDetailsCall($resource,$token);
+        Log::info("<------------------orderDetails------------------>");
+        Log::info($orderDetails);
+        Log::info("<------------------orderDetails------------------>");
         return $orderDetails;
 
     }

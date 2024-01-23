@@ -14,11 +14,9 @@ class WebhookJobImpl extends ProcessWebhookJob
     public function handle()
     {
         $data = json_decode(json_encode($this->webhookCall->payload), true);
-        $headers = json_decode(json_encode($this->webhookCall->headers), true);
-        $headersSin = $this->webhookCall->headers;
+        //$headers = json_decode(json_encode($this->webhookCall->headers), true);
+        //$headersSin = $this->webhookCall->headers;
         $date = Carbon::now();
-
-
 
          Log::info("<----------------Data---------------->");
          Log::info($data);
@@ -54,14 +52,13 @@ class WebhookJobImpl extends ProcessWebhookJob
         }
 
         if(!$finishOrder){
-            Log::info("Error al procesar la orden");
-            Log::info($data);
-            Log::info($headers);
-            Log::info($date);
+            Log::error("Error al procesar la orden");
+            Log::error($data);
+            Log::error($date);
         }
 
-        $simCoApiToImpl = new SimCoApiToImpl();
-        $response = $simCoApiToImpl->updateOrderStatus($orderId, 'completed');
+
+        $response = $processOrder->updateSimCoPortalOrder($orderId, 'completed');
 
         Log::info("WebhookJobImpl = response");
         Log::info($response);

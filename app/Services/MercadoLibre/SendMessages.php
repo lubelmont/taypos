@@ -9,34 +9,13 @@ use Illuminate\Support\Facades\Log;
 
 class SendMessages {
 
-    public function sendMessage($orderId, $message) {
-        
-        $orderService = new CallOrders();
-        $order = $orderService->getOrderDetails($orderId);
-
-        $order["seller_id"] = $order["seller"]["id"];
-        $order["buyer_id"] = $order["buyer"]["id"];
-        $order["order_id"] = $order["id"];
-        $order["message"] = $message;
-        
-        $order = array_filter($order, function ($value) {
-            return !is_null($value);
-        });
-        
-        $order["message"] = $message;
-        
-        $orderService->sendMessage($order);
-        
-        return true;
-    }
-
+   
     //Funcion para enviar un mensaje a un usuario en la api de Mercado Libre Mexico
-    public function sendMessageToUser($userId, $message) {
+    public function sendMessageToBuyer($id_mercadolibre,$orderId,$sellerId,$buyerId,$message) {
         
-        $orderService = new CallOrders();
-        $order = $orderService->sendMessageToUser($userId, $message);
+        $orderService = new MercadoLibreApiServices($id_mercadolibre);
+        return $orderService->sendMessage($orderId,$sellerId,$buyerId,$message);
         
-        return true;
     }
 
 }
