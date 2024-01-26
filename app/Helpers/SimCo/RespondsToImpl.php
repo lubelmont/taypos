@@ -14,21 +14,10 @@ class RespondsToImpl implements RespondsToWebhook
 
 
         $data = [
-            'type' => 'message',
-            'text' => '**You typed**:  \n **Commands supported**: adaptive-card, hero-card, list-card, o365-card and thumbnail-card ',
-            'email' => 'johndoe@example.com'
+            'mesage' => 'OK'
         ];
 
-        
-        
-        $json = json_encode($data);
-        
-       // header('Content-Type: application/json');
        $headers= ['Content-Type'=> 'application/json'];
-
-        $responseMsg = '{ "type": "message", "text": "**You typed**:  \n **Commands supported**: adaptive-card, hero-card, list-card, o365-card and thumbnail-card " }';
-        
-        Log::info("<----------------respondToValidWebhook---------------->".$json );
         return response()->json($data,200, $headers);
     }
 }

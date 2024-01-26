@@ -16,6 +16,11 @@ class WebhookProfileImpl implements WebhookProfile
         $data = json_decode(json_encode($request->input()), true);
         
       
+        //preguntar si $data tiene la propiedad de 'status'
+        if (!isset($data['status'])){
+            return false;
+        }
+
 
 		$statusOrder = $data['status'];
         Log::info($statusOrder );

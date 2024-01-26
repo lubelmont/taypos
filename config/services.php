@@ -42,7 +42,7 @@ return [
     ],
 
     'simco' => [
-        'base_uri' => env('SIMCO_URL'),
+        'base_uri' => env('SIMCO_URL_API'),
         'consumer_key' => env('SIMCO_CONSUMER_KEY'),
         'consumer_secret' => env('SIMCO_CONSUMER_SECRET'),
     ],

@@ -1,29 +1,40 @@
 <?php
 namespace App\Services\MercadoLibre;
 
-use App\Helpers\MercadoLibre\CallOrders;
-use App\Models\MercadoLibreNotification;
+
+use App\Services\MercadoLibre\MLNotifications;
 use App\Models\MercadoLibreOrder;
 use App\Models\MercadoLibreOrderItem;
 use Illuminate\Support\Facades\Log;
 
-class ProcessOrders {
+class MLProcessOrders {
+
+    protected $mlNotifications;
+
+    public function __construct()
+    {
+        $this->mlNotifications = new MLNotifications();
+    }
+
 
     public function processOrder($notification) {
 
         Log::debug("<----------------notification---------------->");
         Log::debug(json_encode($notification, JSON_PRETTY_PRINT));
         Log::debug("<----------------notification---------------->");
-        
-        MercadoLibreNotification::updateOrCreate(["_id"=>$notification["_id"]],$notification);
+
+        // $notification['id']= $notification['_id'];
+        // MercadoLibreNotification::updateOrCreate(["id"=>$notification["id"]],$notification);
+
+        $this->mlNotifications->updateOrCreate($notification);
+
         
         // ejecutar el servicio de orders para obtener los detalles de la orden
 
         $id_mercadolibre = $notification["user_id"];
         $resource = $notification["resource"];
         
-        $orderService = new MercadoLibreApiServices($id_mercadolibre);
-        
+        $orderService = new MLApiServices($id_mercadolibre);
         $order = $orderService->getOrderDetailsCall($resource);
 
                 
@@ -36,18 +47,21 @@ class ProcessOrders {
         if($order["status"] !== "paid"){
             return false;
         }
-        
-        $exists = MercadoLibreOrder::where('id', $order["id"])->first();
 
         
-
-        $newOrder = $exists;
-
+        $exists = MercadoLibreOrder::where('order_id', $order["order_id"])->first();
+        
         if (!$exists){
+            Log::debug("<----------------ORDER ID---------------->");
+            Log::debug($order['order_id']);
+            Log::debug("<----------------ORDER ID---------------->");
 
             $order = array_filter($order, function ($value) {
                 return !is_null($value);
             });
+            Log::debug("<----------------ORDER ID---------------->");
+            Log::debug($order['order_id']);
+            Log::debug("<----------------ORDER ID---------------->");
     
             $order["seller_id"] = $notification["user_id"];
             $order["fulfilled"] = $order["fulfilled"] ?? 0;
@@ -60,8 +74,16 @@ class ProcessOrders {
     
             
             $newOrder = MercadoLibreOrder::create($order);
-        } 
+        } else {
+            $newOrder = $exists;
+            Log::debug("<----------------newOrder ID---------------->");
+            Log::debug($newOrder['order_id']);
+            Log::debug("<----------------newOrder ID---------------->");
+        }
 
+        Log::debug("<----------------exists---------------->");
+        Log::debug($newOrder);
+        Log::debug("<----------------exists---------------->");
         Log::debug("<----------------exists[fulfilled]---------------->");
         Log::debug($newOrder["fulfilled"]);
         Log::debug("<----------------exists[fulfilled]---------------->");
@@ -77,7 +99,7 @@ class ProcessOrders {
         
         foreach ($orderItems as $key => $value) {
         
-            $itemToSave["order_id"] = $newOrder->id;
+            $itemToSave["order_id"] = $newOrder->order_id;
             $itemToSave["item_id"] = $value["item"]["id"];
             $itemToSave["title"] = $value["item"]["title"];
             $itemToSave["category_id"] = $value["item"]["category_id"];

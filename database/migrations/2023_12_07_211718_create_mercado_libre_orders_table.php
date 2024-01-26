@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('ml_orders', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('seller_id');
-            $table->bigInteger('buyer_id');
+            $table->string('order_id')->unique();
+            $table->string('seller_id');
+            $table->string('buyer_id');
             $table->string('buyer_nickname');
             $table->string('buyer_first_name');
             $table->string('buyer_last_name');

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ml_usuarios', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained(); 
-            $table->bigInteger('id_mercadolibre')->unique();
+            $table->string('id_mercadolibre')->unique();
             $table->string('nickname');
             $table->timestamp('registration_date');
             $table->string('first_name');

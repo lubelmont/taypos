@@ -6,7 +6,7 @@ use App\Helpers\MercadoLibre\CallTokenSesion;
 use App\Traits\ConsumeExternalServices;
 use Illuminate\Support\Facades\Log;
 
-class MercadoLibreApiServices
+class MLApiServices
 {
     use ConsumeExternalServices;
 
@@ -22,7 +22,12 @@ class MercadoLibreApiServices
 
     public function getOrderDetailsCall($resourse)
     {
-        return  $this->makeRequest('GET', $resourse);
+        $order = $this->makeRequest('GET', $resourse);
+        $order['order_id'] = $order['id'];
+
+        unset($order['id']);
+
+        return  $order;
     }
 
     public function sendMessage($orderId,$sellerId,$buyerId,$message){

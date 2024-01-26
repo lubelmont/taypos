@@ -13,13 +13,13 @@ class ProcessOrders {
 
     public function processMercadoLibreOrder($orderId) {
 
-        Log::info("processMercadoLibreOrder = $orderId");
+        Log::debug("processMercadoLibreOrder = $orderId");
 
         $items = MercadoLibreOrderItem::where('order_id', $orderId)->get();
         
         foreach ($items as $key => $item) {
             $orderFrom = "ML-".$orderId."-".$item['item_id'];
-            $this->getSimFromESim($orderFrom,$orderId,$item['seller_sku'],$item['quantity']);
+            $this->getSimFromESim($orderFrom,$item['seller_sku'],$item['quantity']);
         }
 
         return true;
@@ -28,15 +28,19 @@ class ProcessOrders {
 
     public function processSimCoPortalOrder($orderId,$orderKey,$itemSku,$quantity) {
 
-        Log::info("processSimCoPortalOrder = $orderId");
-        
+        Log::debug("processSimCoPortalOrder = $orderId");
+        Log::debug("processSimCoPortalOrder itemSku = $itemSku");
+        Log::debug("processSimCoPortalOrder quantity = $quantity");
+
+
+        $orderFrom = "SIMCO-".$orderId."-".$orderKey;
         try {
         
-        $this->getSimFromESim($orderKey,$orderId,$itemSku,$quantity);
+            $this->getSimFromESim($orderFrom,$itemSku,$quantity);
         
         } catch (\Exception $e) {
+            Log::error($e->getMessage());
             return false;
-            error_log($e->getMessage());
         }
 
         return true;
@@ -49,10 +53,10 @@ class ProcessOrders {
     }
 
 
-    private function getSimFromESim($orderFrom,$orderId, $itemSku, $quantity) {
+    private function getSimFromESim($orderFrom, $itemSku, $quantity) {
 
         //Change "type" from "validate" = test  to "transaction" = production
-        $type = env('APP_ENV') === 'prod' ?  'transaction': 'validate';
+        $type = env('APP_ENV') === 'prod' ?  'transaction': 'transaction';
 
         $orderData = [
             "type" => $type,
@@ -69,10 +73,6 @@ class ProcessOrders {
         $esimService = new ESimGoApiService('SIMCO');
         $response = $esimService->createOrderService($orderData);
 
-        Log::debug("response ". class_basename(__CLASS__));
-        Log::debug($response);
-        Log::debug("--response---");
-
         
         if($type == "validate"){
             if($response['valid'] == false){
@@ -80,23 +80,43 @@ class ProcessOrders {
                 return false;
             }
             $response['status']= "completed";
-            $response['statusMessage']= "Order completed: 2 eSIMs assigned";
-            $response['orderReference']= "00de4daf-168e-40d2-9c59-bef33b788db1";
+            $response['statusMessage']= "TEST Order completed: 1 eSIMs assigned";
+            
+            if($itemSku == "esims_1GB_7D_REUP_U"){
+                $response['orderReference']= "1dac1233-0f35-4f4b-9142-ebb632e0b5a1";
+            
+            }else if($itemSku == "esims_1GB_7D_RNA_U"){
+                $response['orderReference']= "44a61f8f-0083-45b2-898d-72fc2e0811fc";
+            
+            }else{
+                $response['orderReference']= "44a61f8f-0083-45b2-898d-72fc2e0811fc";
+            }
+
+            //44a61f8f-0083-45b2-898d-72fc2e0811fc
+            //1dac1233-0f35-4f4b-9142-ebb632e0b5a1
             
         }
 
-        Log::debug("response ". class_basename(__CLASS__));
-        Log::debug($type);
+        Log::debug(class_basename(__CLASS__) . " response ->esimService->createOrderService(orderData) ");
+        Log::debug('type='.$type);
         Log::debug($response);
         Log::debug("--response---");
 
-        $newOrder = $this->saveOrder($orderFrom,$orderId,$itemSku,$quantity,$response);
+        $newOrder = $this->saveOrder($orderFrom,$itemSku,$quantity,$response);
 
 
         //TODO: Put this method in ESimGoApiService
-        if (strpos($response['statusMessage'], 'Order completed') === false) {
-            //throw new Exception('Invalid status message: Order already completed');
-            return false;
+        if ($response['status']!== 'completed') {
+            $message = "Invalid status message !completed: ". $response['status'];
+            $errorObj = [
+                'orderData' => $orderData,
+                'response' => $response,
+                'statusMessage' => $response['statusMessage'],
+                'message' => $message,
+            ];
+            Log::error($message);
+            throw new \Exception(json_encode($errorObj));
+           
         }
 
         
@@ -113,9 +133,9 @@ class ProcessOrders {
         $assingQR = $esimService->assignmentsQR($newOrder['orderReference']);
         
         
-        Log::info("assingQR ". class_basename(__CLASS__));
-        Log::info($assingQR);
-        Log::info("--assingQR---");
+        Log::debug(class_basename(__CLASS__). " assingQR -> esimService->assignmentsQR(newOrder[orderReference])" );
+        Log::debug($assingQR);
+        Log::debug("--assingQR---");
         
         
         foreach ($assingQR as $item) {
@@ -158,7 +178,7 @@ class ProcessOrders {
      *       "orderReference": "5f9c3b6b-5b7b-4b7e-8b0a-5b9e1b2b4b4b"
      *   }
      */
-    private function saveOrder($orderFrom,$orderId,$itemSku,$quantity,$response){
+    private function saveOrder($orderFrom,$itemSku,$quantity,$response){
        
 
         $orderFromResponse = $response["order"][0];
@@ -179,12 +199,10 @@ class ProcessOrders {
         $order->orderReference = $response['orderReference'];
         $order->order_from = $orderFrom;
 
-
-    
-
-
         // check if exist order in database
-        $exists = ESimGoOrder::where('order_from', $orderFrom."-".$orderId)->exists();
+        $exists = ESimGoOrder::where('order_from', $orderFrom)
+                     ->where('item', $itemSku)
+                     ->exists();
 
         if($exists){
             return $order;

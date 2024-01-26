@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('ml_payments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('payer_id');
+            $table->string('order_id');
+            $table->string('payer_id');
             $table->string('payment_method_id');
             $table->string('currency_id');
             $table->integer('installments');
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('authorization_code')->nullable();
             $table->timestamps();
 
-            $table->foreign('order_id')->references('id')->on('ml_orders');
+            $table->foreign('order_id')->references('order_id')->on('ml_orders');
         });
     }
 

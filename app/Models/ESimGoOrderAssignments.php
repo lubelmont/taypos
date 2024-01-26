@@ -16,7 +16,8 @@ class ESimGoOrderAssignments extends Model
         'matchingId', 
         'rspUrl', 
         'bundle', 
-        'orderReference'
+        'orderReference',
+        'qr_svg'
     ];
 
     public function orderReferencer()

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('rspUrl');
             $table->string('bundle');
             $table->string('orderReference');
+            $table->string('qr_svg');
             $table->timestamps();
 
             $table->foreign('orderReference')->references('orderReference')->on('esimgo_orders');

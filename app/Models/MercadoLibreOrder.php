@@ -12,7 +12,7 @@ class MercadoLibreOrder extends Model
 
 
     protected $fillable = [
-        'id',
+        'order_id',
         'date_created',
         'last_updated',
         'expiration_date',

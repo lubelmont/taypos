@@ -18,12 +18,12 @@ class WebhookJobImpl extends ProcessWebhookJob
         //$headersSin = $this->webhookCall->headers;
         $date = Carbon::now();
 
-         Log::info("<----------------Data---------------->");
-         Log::info($data);
-         Log::info("<----------------Data---------------->");
-         Log::info("<----------------line_items---------------->");
-         Log::info($data['line_items']);
-         Log::info("<----------------line_items---------------->");
+         Log::debug("<----------------DataSimCo---------------->");
+         Log::debug(json_encode($data, JSON_PRETTY_PRINT));
+         Log::debug("<----------------Data---------------->");
+         Log::debug("<----------------line_items---------------->");
+         Log::debug($data['line_items']);
+         Log::debug("<----------------line_items---------------->");
 
         $orderKey = $data['order_key'];
         $orderId = $data['id'];
@@ -32,29 +32,39 @@ class WebhookJobImpl extends ProcessWebhookJob
         $processOrder = new ProcessOrders();
         $finishOrderArr =[] ;
         foreach($lineItems as $key => $item){
+
+            Log::debug("<----------------line_items----------------START: >".$key);
+            
             $itemSku = $item['sku'];
             $quantity = $item['quantity'];
-            //$price = $item['price'];
-            //$name = $item['name'];
-            //$product_id = $item['product_id'];
-
+            
             $finishOrderArr[]=$processOrder->processSimCoPortalOrder($orderId,$orderKey,$itemSku,$quantity);
             
+            Log::debug("<----------------line_items----------------END: >".$key);
                     
         }
 
         //verifica si todos los items fueron procesados correctamente
         $finishOrder = true;
         foreach($finishOrderArr as $key => $item){
+            Log::debug("<----------------finishOrderArr---------------->");
+            Log::debug($key.' - '.$item);
+            Log::debug("<----------------finishOrderArr---------------->");
             if($item == false){
                 $finishOrder = false;
             }
         }
 
         if(!$finishOrder){
+
             Log::error("Error al procesar la orden");
-            Log::error($data);
-            Log::error($date);
+            $error = [
+                'payload' => $data,
+                'date' => $date,
+            ];
+
+            throw new \Exception(json_encode($error));
+
         }
 
 

@@ -5,6 +5,7 @@ namespace App\Helpers\MercadoLibre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookClient\WebhookProfile\WebhookProfile;
+use App\Models\MercadoLibreNotification;
 
 class WebhookProfileImpl implements WebhookProfile
 {
@@ -13,19 +14,27 @@ class WebhookProfileImpl implements WebhookProfile
 
         $data = json_decode(json_encode($request->input()), true);
 
-        Log::info("<----------------data from ML---------------->");
-        Log::info($data);
-        Log::info("<----------------data from ML---------------->");
         
         $resource = isset($data['resource']) ? $data['resource'] : 'default_value';
-        Log::info("<----------------resource---------------->");
-        Log::info($resource);
-        Log::info("<----------------resource---------------->");
-
+        
 
         $textToContinue = "orders";
         if (stripos($resource,$textToContinue ) !== false) {
-            Log::info("<----------------FALSO---------------->");
+
+            $notification = MercadoLibreNotification::where('resource', $resource)->first();
+            Log::debug("<----------------notification already exist---------------->.$resource");
+
+            $envi = env('APP_ENV');
+            if( $notification){
+              return false;
+            }
+
+            //if($exist){
+              //  return false;
+            //}
+
+
+            
             return true;
         }
 

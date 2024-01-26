@@ -27,6 +27,7 @@ class ESimGoApiService
     public function createOrderService($orderData)
     {
 
+        Log::debug("orderData: " . json_encode($orderData));
         //  https://docs.esim-go.com/api/#post-/orders
         $serviceMethod = '/v2.3/orders';
 
@@ -69,6 +70,26 @@ class ESimGoApiService
     private function decodeResponse($response)
     {
         return json_decode($response , true);
+    }
+
+    private function checkIfErrorResponse($response)
+    {
+        $erroMessage = "";
+        if(empty($response)){
+            $erroMessage = "The esim-go API response empty";
+
+        }else if(isset($response['message'])){
+            $erroMessage = $response['message'];
+            
+        }
+
+        if(!empty($erroMessage)){
+            Log::error("message: " . $erroMessage);
+            throw new \Exception($erroMessage);
+        }
+        
+        
+        
     }
 
 

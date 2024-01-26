@@ -4,7 +4,7 @@ namespace App\Jobs\MercadoLibre;
 use App\Helpers\MercadoLibre\CallMessages;
 use \Spatie\WebhookClient\Jobs\ProcessWebhookJob;
 use Illuminate\Support\Facades\Log;
-use App\Services\MercadoLibre\ProcessOrders as ProcessOrdersML;
+use App\Services\MercadoLibre\MLProcessOrders;
 use App\Services\SimCo\ProcessOrders as ProcessOrdersSimCo;
 use App\Models\MercadoLibreOrder;
 
@@ -14,10 +14,7 @@ class WebhookJobImpl extends ProcessWebhookJob
     public function handle()
     {
         $payload = json_decode(json_encode($this->webhookCall->payload), true);
-        //$headers = json_decode(json_encode($this->webhookCall->headers));
         
-
-
         $resource = $payload['resource'];
         
          Log::debug("<----------------data---------------->");
@@ -32,12 +29,10 @@ class WebhookJobImpl extends ProcessWebhookJob
         $textToContinue = "orders";
         if (stripos($resource,$textToContinue ) !== false) {
             
-            $processOrdersML = new ProcessOrdersML();
+            $processOrdersML = new MLProcessOrders();
             $order = $processOrdersML->processOrder($payload);
 
-            Log::debug("message orderId=" . $order->id);
-            Log::debug("message payload= ");
-            Log::debug($payload);
+            Log::debug("message orderId=" . $order->order_id);
             Log::debug("--------------------");
             Log::debug($order);
             Log::debug("--------------------");
@@ -48,7 +43,7 @@ class WebhookJobImpl extends ProcessWebhookJob
             }
             
             $processOrdersSimCo = new ProcessOrdersSimCo();
-            $isProcess = $processOrdersSimCo->processMercadoLibreOrder($order->id);
+            $isProcess = $processOrdersSimCo->processMercadoLibreOrder($order->order_id);
             
             
             if(!$isProcess){

@@ -2,25 +2,19 @@
 
 namespace App\Http\Controllers\SimCo;
 
-use App\Helpers\MercadoLibre\CallTokenSesion;
-use App\Models\MercadoLibreTokenSesion;
-use App\Models\MercadoLibreUsuario;
+
 use App\Models\MercadoLibreOrder;
 use App\Models\MercadoLibreOrderItem;
 use App\Models\ESimGoOrder;
 use App\Models\ESimGoOrderAssignments;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
-use App\Helpers\SimCo\SimCoApiToImpl;
+use App\Services\SimCo\SimCoPortalApiService;
 
 class OrderFromPortalCotroller extends Controller
 {
@@ -59,41 +53,44 @@ class OrderFromPortalCotroller extends Controller
             return response()->json(['error' => 'Parámetro "code" no proporcionado.'], 401);
         }
         
+        $parts = explode('-', $orderChain);
+        $orderChain = $parts[0];
+        $orderId = end($parts);
+        // SIMCO-16769-wc_order_WAhdqRQCOp6mw
         
-        $orders = ESimGoOrder::where('order_from', $orderChain)->get();
+        $orderFrom = 'SIMCO-'.$orderId.'-'.$orderChain;
+
+        $orders = ESimGoOrder::where('order_from', $orderFrom)->get();
+       
         
         if(!$orders){
             return response()->json(['error' => 'No se encontró la orden.'], 401);
         }
 
-        $parts = explode('-', $orderChain);
-        $orderId = end($parts);
 
-        $simCoApiToImpl = new SimCoApiToImpl();
-
+        $simCoApiToImpl = new SimCoPortalApiService();
         $orderSimCo = $simCoApiToImpl->getOrderById($orderId);
+        Log::debug('orderSimCo -----------------');
+        Log::debug($orderSimCo);
+        Log::debug('orderSimCo-----------------');
         $orderSimCo = json_decode($orderSimCo);
+
         $itemsToSell = $orderSimCo->line_items;
         $billing = $orderSimCo->billing;
+        //dd($orders, $orderSimCo, $itemsToSell, $billing);
         
         
-        
-        foreach($orders as $key => $item){
-            $esimOrderAssignments  = ESimGoOrderAssignments::where('orderReference', $item['orderReference'])->get();
+        $orderItemsToShow = []; 
+        foreach($orders as $key => $order){
+            $esimOrderAssignments  = ESimGoOrderAssignments::where('orderReference', $order['orderReference'])->get();
             
             $esimOrderAssignmentsToShow = [];
-            $orderItemsToShow = []; 
-            $sku = $item['item'];
+            $sku = $order['item'];
+            //dd($esimOrderAssignments);
 
 
             foreach($esimOrderAssignments as $key => $subItem){
-                $esimOrderAssignmentsToShow[]=[
-                    'id' => $subItem->id,
-                    'iccid' => $subItem->iccid,
-                    'matchingId' => $subItem->matchingId,
-                    'rspUrl' => $subItem->rspUrl,
-                    'qr' => $this->getQRImage64($subItem->matchingId,$subItem->rspUrl),
-                ];
+                $esimOrderAssignmentsToShow[] = $this->fillEsimOrderAssignmentsToShow($subItem);
             }
 
             $filteredItems = array_filter($itemsToSell, function($item) use ($sku) {
@@ -128,8 +125,8 @@ class OrderFromPortalCotroller extends Controller
             'last_name' => $billing->last_name,
         ];
         
+        
         return response()->json(['buyer' => $buyer,'orderItemsToShow'=>$orderItemsToShow]);
-
     }
 
     private function getQRFromML(Request $request)
@@ -141,12 +138,9 @@ class OrderFromPortalCotroller extends Controller
             return response()->json(['error' => 'Parámetro "code" no proporcionado.'], 401);
         }
 
-
-        Log::info($idOrderCrypted);
         $idOrder = Crypt::decrypt($idOrderCrypted);
-        Log::info($idOrder);
-
-        $order = MercadoLibreOrder::where('id', $idOrder)->first();
+        
+        $order = MercadoLibreOrder::where('order_id', $idOrder)->first();
         $orderItems = MercadoLibreOrderItem::where('order_id', $idOrder)->get();
         $orderItemsToShow = [];
         
@@ -156,13 +150,7 @@ class OrderFromPortalCotroller extends Controller
             
             $esimOrderAssignmentsToShow = [];
             foreach($esimOrderAssignments as $key => $subItem){
-                $esimOrderAssignmentsToShow[]=[
-                    'id' => $subItem->id,
-                    'iccid' => $subItem->iccid,
-                    'matchingId' => $subItem->matchingId,
-                    'rspUrl' => $subItem->rspUrl,
-                    'qr' => $this->getQRImage64($subItem->matchingId,$subItem->rspUrl),
-                ];
+                $esimOrderAssignmentsToShow[] = $this->fillEsimOrderAssignmentsToShow($subItem);
             }
 
             $orderItemsToShow[] = [
@@ -177,7 +165,7 @@ class OrderFromPortalCotroller extends Controller
 
 
 
-        Log::info($orderItemsToShow);
+        Log::debug($orderItemsToShow);
         
         //$esimOrderAssignments = $esimOrder->assingnment()->get();
 
@@ -192,6 +180,29 @@ class OrderFromPortalCotroller extends Controller
         return response()->json(['buyer' => $buyer,'orderItemsToShow'=>$orderItemsToShow]);
     }
 
+    private function fillEsimOrderAssignmentsToShow($esimOrderAssignment){
+
+        if (empty($esimOrderAssignment->qr_svg)) {
+
+            $qrImage = $this->getQRImage64($esimOrderAssignment->id,$esimOrderAssignment->matchingId,$esimOrderAssignment->rspUrl);
+            $orderAssignment = ESimGoOrderAssignments::findOrFail($esimOrderAssignment->id);
+            $orderAssignment->update(['qr_svg' => $qrImage]);
+
+        } else {
+            $qrImage = $esimOrderAssignment->qr_svg;
+        }
+
+        return [
+            'id' => $esimOrderAssignment->id,
+            'iccid' => $esimOrderAssignment->iccid,
+            'matchingId' => $esimOrderAssignment->matchingId,
+            'rspUrl' => $esimOrderAssignment->rspUrl,
+            'qr' => $qrImage,
+        ];
+
+    }
+
+
     private function getQRImage64($matchingId,$rspUrl)
     {
         $data = 'LPA:1$'.$rspUrl.'$'.$matchingId;
@@ -202,7 +213,6 @@ class OrderFromPortalCotroller extends Controller
         $qrCode = str_replace('height="100"', 'height="200"', $qrCode);
         //$qrCode = str_replace('fill="#000000"', 'fill="#FF0000"', $qrCode);
 
-        Log::info($qrCode);
         return base64_encode($qrCode);
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ml_order_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id');
+            $table->string('order_id');
             $table->string('item_id');
             $table->string('title');
             $table->string('category_id');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('currency_id');
             $table->timestamps();
 
-            $table->foreign('order_id')->references('id')->on('ml_orders');
+            $table->foreign('order_id')->references('order_id')->on('ml_orders');
         });
     }
 

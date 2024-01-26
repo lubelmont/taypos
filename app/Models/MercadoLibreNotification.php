@@ -9,12 +9,13 @@ class MercadoLibreNotification extends Model
 {
     use HasFactory;
     protected $table = 'ml_notifications'; 
-    protected $primaryKey = '_id';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        '_id',
+        'id',
         'topic',
         'resource',
+        'order_id', 
         'user_id',
         'application_id',
         'sent',

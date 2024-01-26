@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ml_notifications', function (Blueprint $table) {
-            $table->uuid('_id')->primary();
+            $table->uuid('id')->primary();
             $table->string('topic');
             $table->string('resource');
+            $table->string('order_id');
             $table->bigInteger('user_id');
             $table->bigInteger('application_id');
             $table->timestamp('sent')->nullable();;
