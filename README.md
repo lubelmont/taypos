@@ -48,6 +48,11 @@ Create a simbolick link
 each time we change configuirations
 ` $ php81 artisan config:clear `
 
+
+Run queue jobs
+` /opt/alt/php81/usr/bin/php /home/lubelsof/taypos/taypos/artisan queue:work --stop-when-empty `
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
